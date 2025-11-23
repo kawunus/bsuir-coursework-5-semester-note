@@ -1,10 +1,10 @@
-\section{Инструкция пользователя}
+\subsection{Инструкция пользователя}
 
 Так как АИС представляет из себя два веб-приложения, инструкция будет разделена на две части: инструкция по работе с приложением для работников студии и инструкция по работе для клиентов.
 
 Рассмотрим сначала инструкцию для работников студии.
 
-\subsection{Инструкция для работников студии}
+\subsubsection{} Инструкция для работников студии
 
 При входе на сайт работник видит начальную входа, представленную на рисунке. У сотрудников нет кнопки регистрации, так как предполагается, что новых рабоников будет добавлять администратор системы. Скриншот начальной страницы для работников студии приведён на рисунке \ref{fig:worker_start_page}.
 
@@ -57,6 +57,7 @@
 По кнопке "Домой" осуществляется переход на главную страницу приложения. Так же, хотелось бы отметить, что система ориентирована не только на русскоязычных пользователей, поэтому в правом верхнем углу доступна смена языка интерфейса. На данный момент доступны русский и английский языки.
 
 Кнопка "Заказы" позволяет работнику просмотреть список всех заказов, а так же создать новый заказ, удалить или отредактировать уже существующий заказ. Страница заказов представлена на рисунке \ref{fig:worker_orders_page}.
+
 Так же имеются фильтры для удобного поиска заказов по различным параметрам, таким как статус заказа, дата создания и имя клиента, а так же кнопка сортировки. Окно фильтров представлено на рисунке \ref{fig:worker_orders_page_filters}.
 
 \begin{figure}[H]
@@ -73,18 +74,18 @@
     \label{fig:worker_orders_page_filters}
 \end{figure}
 
-Так же, страница заказов разделена на 3 части, в зависимости от статуса заказа: новые заказы, заказы в работе и завершённые заказы. Это позволяет работнику быстро ориентироваться в текущих задачах. На этой странице присутствует кнопка быстрой смены статуса заказа, без необходимости заходить в детали заказа или редактировать заказ. Однако, система запросит причину редактирования заказа, но ее можно оставить пустой. Все статусы заказов представлены на рисунке \ref{fig:worker_order_statuses}. Окно комментария представлено на рисунке \ref{fig:worker_order_status_comment}.
+Так же, страница заказов разделена на 3 части, в зависимости от статуса заказа: новые заказы, заказы в работе и завершённые заказы. Это позволяет работнику быстро ориентироваться в текущих задачах. На этой странице присутствует кнопка быстрой смены статуса заказа, без необходимости заходить в детали заказа или редактировать заказ. Однако, система запросит причину редактирования заказа, но ее можно оставить пустой. Некоторые статусы заказов представлены на рисунке \ref{fig:worker_order_statuses}. У статусов заказов есть четкая система, что нельзя от принятия перейти сразу же к завершению заказа. Для этого необходимо пройти все этапы: от проектирования до печати. На каждом этапе можно поставить различные статусы заказа. Окно комментария представлено на рисунке \ref{fig:worker_order_status_comment}.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\textwidth]{attachments/worker_order_statuses.png}
+    \includegraphics[width=0.8\textwidth]{attachments/worker_order_statuses.png}
     \caption{Статусы заказов на странице заказов работника студии}
     \label{fig:worker_order_statuses}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\textwidth]{attachments/worker_order_status_comment.png}
+    \includegraphics[width=0.8\textwidth]{attachments/worker_order_status_comment.png}
     \caption{Окно комментария при смене статуса заказа на странице заказов работника студии}
     \label{fig:worker_order_status_comment}
 \end{figure}
@@ -113,14 +114,14 @@
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\textwidth]{attachments/worker_statistic_page.png}
+    \includegraphics[width=0.8\textwidth]{attachments/worker_statistic_page.png}
     \caption{Страница статистики работника студии}
     \label{fig:worker_statistics_page}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\textwidth]{attachments/worker_forecast.png}
+    \includegraphics[width=0.8\textwidth]{attachments/worker_forecast.png}
     \caption{График прогноза прибыли на странице статистики работника студии}
     \label{fig:worker_statistics_profit_forecast}
 \end{figure}
@@ -134,7 +135,7 @@
     \label{fig:worker_data_import_page}
 \end{figure}
 
-Алгоритм экспорта один и тот же, при желании можно экспортировать любую сущность, которая есть в системе. Для демонстрационного примера были выбраны заказы, филаменты, пользователи и принтеры. Для примера экспортируем филаменты в форме \textit{Excel}. После выбора сущности и формата, необходимо нажать кнопку "Экспортировать", после чего система сформирует файл и предложит его скачать. Пример экспортированного файла с филаментами в формате \textit{Excel} представлен на рисунке \ref{fig:worker_data_import_example}.
+Алгоритм экспорта один и тот же, при желании можно экспортировать любую сущность, которая есть в системе. Для демонстрационного примера были выбраны заказы, филаменты и принтеры. Для примера экспортируем филаменты в форме \textit{Excel}. После выбора сущности и формата, необходимо нажать кнопку "Экспортировать", после чего система сформирует файл и предложит его скачать. Пример экспортированного файла с филаментами в формате \textit{Excel} представлен на рисунке \ref{fig:worker_data_import_example}.
 
 \begin{figure}[H]
     \centering
@@ -143,6 +144,85 @@
     \label{fig:worker_data_import_example}
 \end{figure}
 
-\subsection{Инструкция для клиентов}
+\subsubsection{} Инструкция для клиентов
 
 Рассмотрим домашнюю страницу клиента, представленную на рисунке \ref{fig:client_home_page}. Она показывается всем пользователям, даже неавторизованным. На этой странице клиент может ознакомиться с услугами студии, контакты, а так же авторизоватся.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{attachments/client_home_page.png}
+    \caption{Домашняя страница клиента}
+    \label{fig:client_home_page}
+\end{figure}
+
+Отсюда пользователь может перейти на страницу регистрации, представленную на рисунке \ref{fig:client_registration_page}, если у него еще нет аккаунта.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{attachments/client_registration_page.png}
+    \caption{Страница регистрации клиента}
+    \label{fig:client_registration_page}
+\end{figure}
+
+При создании нового аккаунта, система проверяет уникальность почты. Если пользователь пытается зарегистрироваться с уже существующей почтой, появляется сообщение об ошибке. Так же, система, для защиты от ботов, требует верефецировать почту. На указанную почту приходит письмо с кодом подтверждения, который необходимо ввести на странице подтверждения почты, представленной на рисунке \ref{fig:client_email_confirmation_page}. Само письмо представлено на рисунке \ref{fig:client_email_confirmation_letter}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{attachments/client_email_confirmation_page.png}
+    \caption{Страница подтверждения почты клиента}
+    \label{fig:client_email_confirmation_page}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{attachments/client_email_confirmation_letter.png}
+    \caption{Письмо с кодом подтверждения почты клиента}
+    \label{fig:client_email_confirmation_letter}
+\end{figure}
+
+Так же, при входе на сайт, система позволяет пользователю восстановить пароль, если он его забыл. Для этого необходимо перейти по ссылке "Забыли пароль", после чего откроется страница восстановления пароля. Пользователю на почту высылается новый пароль. Письмо с новым паролем представлено на рисунке \ref{fig:client_password_recovery_letter}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{attachments/client_password_recovery_letter.png}
+    \caption{Письмо с новым паролем клиента}
+    \label{fig:client_password_recovery_letter}
+\end{figure}
+
+После того, как клиент успешно вошел в систему, он попадает на главную страницу клиента, представленную на рисунке \ref{fig:client_main_page}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{attachments/client_main_page.png}
+    \caption{Главная страница клиента}
+    \label{fig:client_main_page}
+\end{figure}
+
+На этой странице клиент может просмотреть свои заказы, создать новый заказ, а так же изменить свои личные данные через страницу профиля, представленную на рисунке \ref{fig:client_profile_page}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{attachments/client_profile_page.png}
+    \caption{Страница профиля клиента}
+    \label{fig:client_profile_page}
+\end{figure}
+
+Страница создания нового заказа представлена на рисунке \ref{fig:client_create_order_page}. Здесь клиент может заполнить все необходимые поля для создания заказа, включая описание, загрузку файлов и выбор параметров печати.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{attachments/client_create_order_page.png}
+    \caption{Страница создания нового заказа клиента}
+    \label{fig:client_create_order_page}
+\end{figure}
+
+Страница просмотра деталей заказа представлена на рисунке \ref{fig:client_order_details_page}. Здесь клиент может просмотреть статус своего заказа, комментарии от работников студии и другую информацию.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{attachments/client_order_details_page.png}
+    \caption{Страница деталей заказа клиента}
+    \label{fig:client_order_details_page}
+\end{figure}
+
+Инструкция пользователя предоставляет четкие и понятные шаги для работы с системой, обеспечивая удобство и эффективность в использовании. Она помогает пользователям быстро освоиться с функционалом системы, а также минимизирует вероятность ошибок при взаимодействии с интерфейсом. Благодаря данной инструкции каждый пользователь может легко выполнять необходимые действия и достигать поставленных целей.
