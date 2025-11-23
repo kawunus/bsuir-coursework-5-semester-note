@@ -1,0 +1,148 @@
+\section{Инструкция пользователя}
+
+Так как АИС представляет из себя два веб-приложения, инструкция будет разделена на две части: инструкция по работе с приложением для работников студии и инструкция по работе для клиентов.
+
+Рассмотрим сначала инструкцию для работников студии.
+
+\subsection{Инструкция для работников студии}
+
+При входе на сайт работник видит начальную входа, представленную на рисунке. У сотрудников нет кнопки регистрации, так как предполагается, что новых рабоников будет добавлять администратор системы. Скриншот начальной страницы для работников студии приведён на рисунке \ref{fig:worker_start_page}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{attachments/worker_start_page.png}
+    \caption{Начальная страница для работников студии}
+    \label{fig:worker_start_page}
+\end{figure}
+
+При этом, если кто-то попытается зайти под обычным пользователем, то он увидит сообщение об ошибке, представленное на рисунке \ref{fig:worker_start_page_error}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{attachments/worker_start_page_error.png}
+    \caption{Сообщение об ошибке при попытке входа обычного пользователя на страницу работников студии}
+    \label{fig:worker_start_page_error}
+\end{figure}
+
+После успешного входа работник попадает на главную страницу приложения, представленную на рисунке \ref{fig:worker_main_page}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{attachments/worker_main_page.png}
+    \caption{Главная страница для работников студии}
+    \label{fig:worker_main_page}
+\end{figure}
+
+Так как был вход с аккаунта администратора, на главной странице отображаются все доступные функции. Но если, например, вошел обычный работник, то он не видит вкладки для статистики и управления пользователями, так как это не входит в его обязанности. Так же, на главной странице показываются интересные факты о студии.
+
+Рассмотрим основные функции, доступные в системе.
+
+Кнопка "Профиль" позволяет работнику просмотреть и изменить свои личные данные, такие как имя, контактная информация и пароль. Страница профиля представлена на рисунке \ref{fig:worker_profile_page}.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{attachments/worker_profile_page.png}
+    \caption{Страница профиля работника студии}
+    \label{fig:worker_profile_page}
+\end{figure}
+
+Так же, при любом изменении личных данных, система требует ввести пароль для подтверждения изменений. А при попытке изменить почту на уже существующую в системе, появляется сообщение об ошибке, представленное на рисунке \ref{fig:worker_profile_page_error}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{attachments/worker_profile_page_error.png}
+    \caption{Сообщение об ошибке при попытке изменить почту на уже существующую в системе}
+    \label{fig:worker_profile_page_error}
+\end{figure}
+
+По кнопке "Домой" осуществляется переход на главную страницу приложения. Так же, хотелось бы отметить, что система ориентирована не только на русскоязычных пользователей, поэтому в правом верхнем углу доступна смена языка интерфейса. На данный момент доступны русский и английский языки.
+
+Кнопка "Заказы" позволяет работнику просмотреть список всех заказов, а так же создать новый заказ, удалить или отредактировать уже существующий заказ. Страница заказов представлена на рисунке \ref{fig:worker_orders_page}.
+Так же имеются фильтры для удобного поиска заказов по различным параметрам, таким как статус заказа, дата создания и имя клиента, а так же кнопка сортировки. Окно фильтров представлено на рисунке \ref{fig:worker_orders_page_filters}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{attachments/worker_orders_page.png}
+    \caption{Страница заказов работника студии}
+    \label{fig:worker_orders_page}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{attachments/worker_orders_page_filters.png}
+    \caption{Окно фильтров на странице заказов работника студии}
+    \label{fig:worker_orders_page_filters}
+\end{figure}
+
+Так же, страница заказов разделена на 3 части, в зависимости от статуса заказа: новые заказы, заказы в работе и завершённые заказы. Это позволяет работнику быстро ориентироваться в текущих задачах. На этой странице присутствует кнопка быстрой смены статуса заказа, без необходимости заходить в детали заказа или редактировать заказ. Однако, система запросит причину редактирования заказа, но ее можно оставить пустой. Все статусы заказов представлены на рисунке \ref{fig:worker_order_statuses}. Окно комментария представлено на рисунке \ref{fig:worker_order_status_comment}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{attachments/worker_order_statuses.png}
+    \caption{Статусы заказов на странице заказов работника студии}
+    \label{fig:worker_order_statuses}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{attachments/worker_order_status_comment.png}
+    \caption{Окно комментария при смене статуса заказа на странице заказов работника студии}
+    \label{fig:worker_order_status_comment}
+\end{figure}
+
+При нажатии на кнопку "Детали" открывается страница с подробной информацией о заказе, где работник может просмотреть все детали заказа, включая информацию о клиенте, описание заказа, сроки выполнения, приложенные файлы и текущий статус. Страница деталей заказа представлена на рисунке \ref{fig:worker_order_details}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{attachments/worker_order_status_details.png}
+    \caption{Страница деталей заказа работника студии}
+    \label{fig:worker_order_details}
+\end{figure}
+
+Из интересных статусов, есть статус "филамент потрачен". Он открывает не просто окно с комментарием, а окно с калькулятором потраченного филамента, представленное на рисунке \ref{fig:worker_order_filament_calculator}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{attachments/order_status_filament.png}
+    \caption{Окно калькулятора потраченного филамента при смене статуса заказа на странице заказов работника студии}
+    \label{fig:worker_order_filament_calculator}
+\end{figure}
+
+Остальные страницы с сущностями идентичны по функционалу странице заказов, поэтому на них не будем останавливаться подробно. 
+
+Рассмотрим страницу статистики, представленную на рисунке \ref{fig:worker_statistics_page}. Она доступна только администратору и аналитику. На этой странице отображаются различные графики и диаграммы, которые помогают анализировать производительность студии, количество выполненных заказов и другие ключевые показатели. Так же, на этой странице есть прогноз прибыли на следующие месяцы, используя метод простого скользящего среднего. График прогноза прибыли представлен на рисунке \ref{fig:worker_statistics_profit_forecast}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{attachments/worker_statistic_page.png}
+    \caption{Страница статистики работника студии}
+    \label{fig:worker_statistics_page}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{attachments/worker_forecast.png}
+    \caption{График прогноза прибыли на странице статистики работника студии}
+    \label{fig:worker_statistics_profit_forecast}
+\end{figure}
+
+Рассмотрим еще одну функцию аналитика - импорт данных. Система предлагает экспортировать данные в трех форматах: \textit{CSV}, \textit{JSON} и \textit{Excel}. Страница импорта данных представлена на рисунке \ref{fig:worker_data_import_page}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{attachments/worker_import_page.png}
+    \caption{Страница импорта данных работника студии}
+    \label{fig:worker_data_import_page}
+\end{figure}
+
+Алгоритм экспорта один и тот же, при желании можно экспортировать любую сущность, которая есть в системе. Для демонстрационного примера были выбраны заказы, филаменты, пользователи и принтеры. Для примера экспортируем филаменты в форме \textit{Excel}. После выбора сущности и формата, необходимо нажать кнопку "Экспортировать", после чего система сформирует файл и предложит его скачать. Пример экспортированного файла с филаментами в формате \textit{Excel} представлен на рисунке \ref{fig:worker_data_import_example}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{attachments/worker_data_import_example.png}
+    \caption{Пример экспортированного файла с филаментами в формате Excel}
+    \label{fig:worker_data_import_example}
+\end{figure}
+
+\subsection{Инструкция для клиентов}
+
+Рассмотрим домашнюю страницу клиента, представленную на рисунке \ref{fig:client_home_page}. Она показывается всем пользователям, даже неавторизованным. На этой странице клиент может ознакомиться с услугами студии, контакты, а так же авторизоватся.

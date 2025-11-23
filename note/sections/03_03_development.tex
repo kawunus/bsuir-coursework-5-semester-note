@@ -1,0 +1,159 @@
+\subsection{Программная реализация приложения}
+
+В данном разделе представлен программный код основных функциональных модулей серверной части приложения, демонстрирующий реализацию бизнес-логики и взаимодействия с базой данных. Код включает примеры создания записей, чтения данных, их обновления и удаления (\textit{CRUD}-операции), а также описывает обработку \textit{HTTP}-запросов с использованием языка \textit{Kotlin} и асинхронного фреймворка \textit{Ktor}.
+
+Архитектура приложения построена на принципах «Чистой архитектуры» (\textit{Clean Architecture}), где взаимодействие с данными инкапсулировано в слоях: от маршрутизации (\textit{Routes}) к бизнес-логике (\textit{UseCases}) и далее к базе данных. Для каждого приведенного фрагмента кода даны пояснения, раскрывающие его назначение, логику выполнения и ключевые аспекты обработки данных (валидация, проверка прав доступа через \textit{JWT}). Это позволяет детально продемонстрировать, как АИС обеспечивает целостность данных и безопасность операций в процессе управления студией.
+
+Одной из фундаментальных подсистем разрабатываемой АИС является модуль безопасности, обеспечивающий защиту \textit{API} от несанкционированного доступа. Для реализации механизма аутентификации был выбран стандарт \textit{JWT (JSON Web Token)}, который идеально подходит для архитектуры \textit{RESTful}-сервисов, так как не требует хранения состояния сессии на сервере (\textit{stateless}).
+
+В соответствии с принципами «Чистой архитектуры», логика валидации и генерации токенов инкапсулирована в сервисный слой и предоставляется через \textit{UserUseCase}, в то время как конфигурация плагина безопасности в \textit{Ktor} отвечает только за перехват и проверку \textit{HTTP}-запросов.
+
+Ниже приведен код функции конфигурации безопасности. Она инициализирует плагин \textit{Authentication}, настраивает верификатор подписи токена и определяет логику валидации полезной нагрузки (\textit{payload}).
+
+\textit{
+fun Application.configureSecurity() \{ \\
+\hspace*{1cm}// Внедрение зависимости бизнес-логики пользователя \\
+\hspace*{1cm}val userUseCase: UserUseCase by inject() \\
+\hspace*{1cm}authentication \{ \\
+\hspace*{2cm}jwt("jwt") \{ \\
+\hspace*{3cm}// Установка верификатора (проверка подписи HMAC256 и издателя) \\
+\hspace*{3cm}verifier(userUseCase.getVerifier()) \\
+\hspace*{3cm}realm = "ServiceServer" \\
+\hspace*{3cm}// Логика валидации данных внутри токена \\
+\hspace*{3cm}validate \{ credential -> \\
+\hspace*{4cm}val payload = credential.payload \\
+\hspace*{4cm}val email = payload.getClaim("email").asString() \\
+\hspace*{4cm}// Обращение к UseCase для проверки существования пользователя в БД \\
+\hspace*{4cm}val user = userUseCase.getUserByEmail(email) \\
+\hspace*{4cm}user // Возврат объекта пользователя как Principal \\
+\hspace*{3cm}\} \\
+\hspace*{2cm}\} \\
+\hspace*{1cm}\} \\
+\}
+}
+
+Работа представленного метода строится следующим образом:
+
+\begin{itemize}
+    \item Внедрение зависимостей: С помощью библиотеки \textit{Koin} (\texttt{by inject}) в функцию внедряется экземпляр \textit{UserUseCase}. Это позволяет разорвать жесткую связь между конфигурацией сервера и базой данных.
+    \item Настройка верификатора (\textit{Verifier}): Метод \texttt{verifier} загружает настройки алгоритма шифрования (\textit{HMAC256}) и секретный ключ из переменных окружения через сервисный слой. На этом этапе \textit{Ktor} автоматически отклоняет токены с неверной подписью или истекшим сроком действия (\textit{expired}).
+    \item Валидация (\textit{Validate}): Если техническая проверка токена прошла успешно, выполняется блок \texttt{validate}. Из полезной нагрузки токена (\textit{Claims}) извлекается уникальный идентификатор пользователя (в данном случае \textit{email}).
+    \item Обращение к слою данных: Система обращается к \textit{UserUseCase} для поиска пользователя в базе данных. Это критически важный шаг бизнес-логики: даже если токен технически валиден, но пользователь был заблокирован или удален из БД, доступ будет запрещен (метод вернет \texttt{null}).
+    \item Авторизация: В случае успеха возвращается объект \textit{user}, который становится \textit{Principal} (субъектом доступа). В дальнейшем, в маршрутах (\textit{Routes}), система использует этот объект для проверки роли (\textit{RoleModel}), разрешая или запрещая конкретные операции (например, создание заказа или списание материала).
+\end{itemize}
+
+Генерация токена вынесена в отдельный сервис \textit{JwtService}, который формирует \textit{payload}, помещая туда \textit{ID} пользователя, его роль и срок действия токена (8 дней). Такой подход обеспечивает высокую безопасность и гибкость управления доступом.
+
+Важной частью системы является модуль загрузки и обработки файлов (\textit{STL}-модели, чертежи), прикрепляемых к заказам. Этот модуль должен обеспечивать не только сохранение данных, но и строгую валидацию типов файлов, ограничение по размеру и контроль прав доступа (пользователь может удалять только свои файлы).
+
+Ниже приведены ключевые фрагменты реализации, разделенные по слоям архитектуры.
+
+\textit{
+// 1. Слой маршрутизации (Маршрут обработки загрузки файла) \\
+post \{ \\
+\hspace*{1cm}val principal = call.principal<UserModel>() \\
+\hspace*{2cm}?: return@post call.respond(HttpStatusCode.Unauthorized) \\
+\hspace*{1cm}val orderId = call.parameters["orderId"]?.toIntOrNull() \\
+\hspace*{1cm}// Проверка прав доступа (Защита от IDOR уязвимостей) \\
+\hspace*{1cm}if (order.customer.id != principal.id \&\& \\
+\hspace*{2cm}principal.role != RoleModel.ADMIN \&\& \\
+\hspace*{2cm}principal.role != RoleModel.EMPLOYEE \\
+\hspace*{1cm}) \{ \\
+\hspace*{2cm}return@post call.respond(HttpStatusCode.Forbidden, "Нет доступа к заказу") \\
+\hspace*{1cm}\} \\
+\hspace*{1cm}// Чтение Multipart-данных \\
+\hspace*{1cm}val uploadedFile = orderFileUseCase.uploadFile( \\
+\hspace*{2cm}orderId = orderId, \\
+\hspace*{2cm}fileBytes = fileBytes, \\
+\hspace*{2cm}fileName = fileName, \\
+\hspace*{2cm}mimeType = mimeType, \\
+\hspace*{2cm}uploadedBy = principal.id \\
+\hspace*{1cm}) \\
+\hspace*{1cm}call.respond(HttpStatusCode.Created, uploadedFile) \\
+\}
+}
+
+Бизнес-логика загрузки инкапсулирована в классе \textit{OrderFileUseCase}. Здесь происходит проверка бизнес-правил (максимальный размер файла, разрешенные расширения) перед тем, как передать файл в хранилище.
+
+\textit{
+// 2. Слой бизнес-логики (OrderFileUseCase.kt) \\
+suspend fun uploadFile( \\
+\hspace*{1cm}orderId: Int, \\
+\hspace*{1cm}fileBytes: ByteArray, \\
+\hspace*{1cm}fileName: String, \\
+\hspace*{1cm}mimeType: String, \\
+\hspace*{1cm}uploadedBy: Int \\
+): OrderFileModel \{ \\
+\hspace*{1cm}// Валидация количества файлов \\
+\hspace*{1cm}val currentFileCount = orderFileRepository.countFilesByOrderId(orderId) \\
+\hspace*{1cm}if (currentFileCount >= MAX\_FILES\_PER\_ORDER) \{ \\
+\hspace*{2cm}throw IllegalStateException("Превышен лимит файлов на заказ") \\
+\hspace*{1cm}\} \\
+\hspace*{1cm}// Валидация размера (макс. 20 МБ) \\
+\hspace*{1cm}if (fileBytes.size > MAX\_FILE\_SIZE) \{ \\
+\hspace*{2cm}throw IllegalStateException("Файл слишком большой") \\
+\hspace*{1cm}\} \\
+\hspace*{1cm}// Загрузка в облачное хранилище (Firebase) \\
+\hspace*{1cm}val (storagePath, publicUrl) = firebaseStorageService.uploadFile( \\
+\hspace*{2cm}fileBytes, fileName, mimeType, orderId \\
+\hspace*{1cm}) \\
+\hspace*{1cm}// Сохранение метаданных в БД PostgreSQL \\
+\hspace*{1cm}val fileModel = OrderFileModel( \\
+\hspace*{2cm}orderId = orderId, \\
+\hspace*{2cm}fileName = fileName, \\
+\hspace*{2cm}fileUrl = publicUrl, \\
+\hspace*{2cm}uploadedAt = LocalDateTime.now(), \\
+\hspace*{2cm}uploadedBy = uploadedBy \\
+\hspace*{1cm}) \\
+\hspace*{1cm}return orderFileRepository.saveFileMetadata(fileModel) \\
+\}
+}
+
+Физическое сохранение файлов осуществляется через сервис интеграции с \textit{Google Firebase Storage}. Это позволяет хранить большие объемы данных в «облаке», снижая нагрузку на основной сервер приложения.
+
+\textit{
+// 3. Инфраструктурный слой (FirebaseStorageService.kt) \\
+private fun uploadToFirebase(fileBytes: ByteArray, storagePath: String, mimeType: String): Pair<String, String> \{ \\
+\hspace*{1cm}try \{ \\
+\hspace*{2cm}val bucket = StorageClient.getInstance().bucket() \\
+\hspace*{2cm}val blob = bucket.create(storagePath, fileBytes, mimeType) \\
+\hspace*{2cm}// Генерация временной подписанной ссылки (действует 7 дней) \\
+\hspace*{2cm}val signedUrl = blob.signUrl(7, TimeUnit.DAYS).toString() \\
+\hspace*{2cm}return Pair(storagePath, signedUrl) \\
+\hspace*{1cm}\} catch (e: Exception) \{ \\
+\hspace*{2cm}println("Ошибка загрузки в Firebase: \$\{e.message\}") \\
+\hspace*{2cm}throw e \\
+\hspace*{1cm}\} \\
+\}
+}
+
+Помимо защиты транспортного уровня (\textit{HTTPS, JWT}), система обеспечивает безопасность хранения учетных данных. Пароли пользователей никогда не сохраняются в базе данных в открытом виде. Для их защиты используется алгоритм хеширования \textit{HMAC-SHA1} с использованием секретного ключа, хранящегося в конфигурации сервера.
+
+Ниже приведен код криптографической функции, используемой при регистрации и входе пользователя.
+
+\textit{
+// Функция хеширования пароля с использованием алгоритма HMAC \\
+fun hashPassword(password: String): String \{ \\
+\hspace*{1cm}val hmac = Mac.getInstance("HmacSHA1") \\
+\hspace*{1cm}hmac.init(hmacKey) // Инициализация секретным ключом из .env \\
+\hspace*{1cm}// Преобразование пароля в байтовый массив и хеширование \\
+\hspace*{1cm}return hex(hmac.doFinal(password.toByteArray(Charsets.UTF\_8))) \\
+\}
+}
+
+Для разграничения прав доступа к различным \textit{API}-эндпоинтам была реализована специальная функция-расширение (\textit{Extension Function}) для класса \textit{ApplicationCall}. Она позволяет декларативно указывать требуемые роли прямо в маршрутизаторе (например, разрешать удаление принтера только Администратору).
+
+\textit{
+// Проверка наличия у пользователя одной из требуемых ролей \\
+fun ApplicationCall.authenticateWithRole(vararg targetRole: RoleModel) \{ \\
+\hspace*{1cm}// Извлечение объекта пользователя из контекста (Principal) \\
+\hspace*{1cm}principal<UserModel>().also \{ user -> \\
+\hspace*{2cm}// Если пользователь не найден или его роль не входит в список разрешенных \\
+\hspace*{2cm}if (user == null || user.role !in targetRole) \{ \\
+\hspace*{3cm}throw UnauthorizedException() // Выброс исключения (HTTP 403 Forbidden) \\
+\hspace*{2cm}\} \\
+\hspace*{1cm}\} \\
+\}
+}
+
+Данный подход позволяет избежать дублирования кода проверок в каждом контроллере и делает систему безопасности прозрачной и легко расширяемой.
